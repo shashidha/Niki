@@ -1,0 +1,98 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin:'base'
+group = 'com.niki.bjetf.mobile'
+
+sourceCompatibility = 1.8
+version = '1.0'
+
+ext {
+    projTitle = 'Blue Jeans Test Framework - Android Tests'
+    projVersion = '1.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+repositories {
+    maven {
+        url "http://repo.bodar.com/"
+    }
+}
+
+dependencies {
+
+    compile files("${System.properties['java.home']}/../lib/tools.jar")
+    compile 'org.projectlombok:lombok:1.14.4'
+    testCompile 'junit:junit:4.11'
+
+    compile project(':androidcore')
+    compile project(':baseframework')
+    compile group: 'junit', name: 'junit', version: '4.11'
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '2.48.2'
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-server', version: '2.48.2'
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-remote-driver', version: '2.48.2'
+
+    compile group: 'info.cukes', name: 'cucumber-java', version: '1.2.4'
+    compile group: 'info.cukes', name: 'cucumber-junit', version: '1.2.4'
+    compile group: 'info.cukes', name: 'cucumber-core', version: '1.2.4'
+    compile group: 'info.cukes', name: 'cucumber-picocontainer', version: '1.2.4'
+    compile group: 'net.masterthought', name: 'cucumber-reporting', version: '0.0.23'
+    compile group: 'com.googlecode.totallylazy', name:'totallylazy', version:'1049'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.+'
+    compile group: 'ch.qos.logback', name: 'logback-core', version: '1.0.+'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.+'
+
+}
+
+configurations {
+    cucumberRuntime {
+        extendsFrom testRuntime
+    }
+}
+
+defaultTasks 'clean', 'run'
+
+task cucumber() {
+    dependsOn assemble, compileTestJava, processTestResources
+    def manifestFile = file("environment.txt")
+    def capabilitylist = file ("capability.txt")
+
+
+    manifestFile.write(envType + "&" + hubUrl + "%" + hubUrl1)
+    capabilitylist.write(package1+"|"+activity+"*"+platformVersion+"@"+platformName+"!"+deviceName+"^"+language)
+    def cucumberTags = [];
+    if (testTags.contains('&')) {
+        def tags = testTags.split("&")
+        tags.each { tagId ->
+            cucumberTags.add('--tags')
+            cucumberTags.add(tagId)
+        }
+        cucumberTags.add('--tags')
+        cucumberTags.add('~@pending')
+        cucumberTags.add('--tags')
+        cucumberTags.add('~@wip')
+
+    } else {
+        cucumberTags = ['--tags', testTags, '--tags', '~@pending', '--tags', '~@wip']
+    }
+    logger.quiet("Tags are" + cucumberTags)
+    def cucumberArgs = ['--plugin', 'html:target/cucumber-html-report', '--plugin','junit:target/junit-report.xml','--plugin', 'json:target/cucumber.json', '-f', 'pretty', '--glue', 'com.niki.bjetf.android.tests', 'src/test/resources',] + cucumberTags
+    logger.quiet("Arguments are" + cucumberArgs)
+    doLast {
+        javaexec {
+            jvmArgs = []
+            main = "cucumber.api.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = cucumberArgs
+        }
+    }
+
+    task wrapper(type: Wrapper) {
+        jarFile = 'wrapper/gradle-wrapper.jar'
+        gradleVersion = "2.7"
+    }
+}
+
+

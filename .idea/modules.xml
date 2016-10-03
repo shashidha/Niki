@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Niki.iml" filepath="$PROJECT_DIR$/Niki.iml" />
+      <module fileurl="file://$PROJECT_DIR$/androidcore/androidcore.iml" filepath="$PROJECT_DIR$/androidcore/androidcore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/androidtests/androidtests.iml" filepath="$PROJECT_DIR$/androidtests/androidtests.iml" />
+      <module fileurl="file://$PROJECT_DIR$/baseframework/baseframework.iml" filepath="$PROJECT_DIR$/baseframework/baseframework.iml" />
+    </modules>
+  </component>
+</project>

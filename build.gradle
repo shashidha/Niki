@@ -1,0 +1,21 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+group = 'com.niki.bjetf.mobile'
+allprojects { apply plugin: "idea" }
+
+
+sourceCompatibility = 1.8
+version = '1.0'
+
+
+task identify {
+    println "-----------------------------------"
+    println "   _____               _ _          "
+    println "  / ____|             | | |         "
+    println " | |  __ _ __ __ _  __| | | ___     "
+    println " | | |_ | '__/ _` |/ _` | |/ _ \\    "
+    println " | |__| | | | (_| | (_| | |  __/    "
+    println "  \\_____|_|  \\__,_|\\__,_|_|\\___|    "
+    println ""
+    println "-----------------------------------"
+}
